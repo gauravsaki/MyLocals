@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
+    tools:context="com.mylocals.MainActivity">
     <item
         android:id="@+id/action_saved_list"
         android:icon="@drawable/view_list"
@@ -13,6 +13,6 @@
         android:id="@+id/action_about"
         android:icon="@drawable/information_outline"
         android:orderInCategory="2"
-        android:title="About"
+        android:title="Setting"
         app:showAsAction="ifRoom" />
 </menu>

@@ -1,4 +1,4 @@
-package com.chris.randomrestaurantgenerator;
+package com.mylocals;
 
 import org.junit.Test;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.chris.randomrestaurantgenerator">
+    package="com.mylocals">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -10,11 +10,6 @@
     <!-- Complies with: https://developer.android.com/guide/topics/location/strategies.html#Permission -->
     <uses-feature android:name="android.hardware.location.gps" />
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
@@ -23,11 +18,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.mylocals.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing"></activity>
+        <activity
+            android:name="com.mylocals.SavedListActivity"
+            android:label="Saved List"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.mylocals.AboutActivity"
+            android:label="About"
+            android:screenOrientation="portrait" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD4xwdTy24XH55ifN2CFLls5jFiTQYbVS4" />
+
+        <activity
+            android:name="com.mylocals.ActivityRegistration"
+            android:label="@string/title_activity_activity_registration">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,21 +46,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SavedListActivity"
-            android:label="Saved List"
+            android:name="com.mylocals.MapsActivity"
+            android:label="@string/title_activity_maps"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".AboutActivity"
-            android:label="About"
-            android:screenOrientation="portrait"></activity>
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD4xwdTy24XH55ifN2CFLls5jFiTQYbVS4" />
-
-        <activity
-            android:name=".ActivityRegistration"
-            android:label="@string/title_activity_activity_registration"></activity>
+            android:name="com.mylocals.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.chris.randomrestaurantgenerator;
+package com.mylocals;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
