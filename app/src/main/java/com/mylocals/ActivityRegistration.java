@@ -23,8 +23,11 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
+import com.mylocals.Handler.APIHandler;
 import com.mylocals.R;
 import com.mylocals.entities.HttpResponse;
+import com.mylocals.entities.User;
+import com.squareup.okhttp.ResponseBody;
 
 import retrofit.Callback;
 import retrofit.Response;
@@ -48,12 +51,12 @@ public class ActivityRegistration extends AppCompatActivity  {
     private View mProgressView;
     private View mLoginFormView;
 
-    Callback<HttpResponse> callbackInterface = new Callback<HttpResponse>() {
+    Callback<ResponseBody> callbackInterface = new Callback<ResponseBody>() {
         /**
          * onResponse is called when any kind of response has been received.
          */
         @Override
-        public void onResponse(Response<HttpResponse> response, Retrofit retrofit) {
+        public void onResponse(Response<ResponseBody> response, Retrofit retrofit) {
             // http response status code + headers
             System.out.println("Response status code: " + response.code());
 
@@ -64,22 +67,18 @@ public class ActivityRegistration extends AppCompatActivity  {
                     System.out.println(response.errorBody().string());
                 } catch (IOException e) {
                     // do nothing
+                    e.printStackTrace();
                 }
                 return;
             }
 
             // if parsing the JSON body failed, `response.body()` returns null
-            HttpResponse decodedResponse = response.body();
+            ResponseBody decodedResponse = response.body();
             if (decodedResponse == null) return;
 
             // at this point the JSON body has been successfully parsed
             System.out.println("Response (contains request infos):");
-            System.out.println("- url:         " + decodedResponse.url);
-            System.out.println("- ip:          " + decodedResponse.origin);
-            System.out.println("- headers:     " + decodedResponse.headers);
-            System.out.println("- args:        " + decodedResponse.args);
-            System.out.println("- form params: " + decodedResponse.form);
-            System.out.println("- json params: " + decodedResponse.json);
+            System.out.println("- url:         " + decodedResponse);
         }
 
         /**
@@ -123,6 +122,14 @@ public class ActivityRegistration extends AppCompatActivity  {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        APIHandler apiHandler= APIHandler.getInstance();
+        User user = new User();
+        user.setUserName("mart");
+        user.setDob("22/10/1398");
+        user.setAddress("sf dsfsdfsd fs");
+        user.setEmail("fsdfs@ff.com");
+        user.setMobile("1234567890");
+        apiHandler.createUser(user,callbackInterface);
     }
 
     private void populateAutoComplete() {

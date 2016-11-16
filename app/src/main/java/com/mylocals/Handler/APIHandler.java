@@ -3,6 +3,7 @@ package com.mylocals.Handler;
 import com.mylocals.constants.Constants;
 import com.mylocals.entities.HttpResponse;
 import com.mylocals.entities.User;
+import com.squareup.okhttp.ResponseBody;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -25,9 +26,9 @@ public class APIHandler {
 
     }
 
-    public void createUser(User user, Callback<HttpResponse> callbackInterface){
+    public void createUser(User user, Callback<ResponseBody> callbackInterface){
         APIInterface apiInterface = getRetrofitObject();
-        Call<HttpResponse> call =apiInterface.registerUser(user);
+        Call<ResponseBody> call =apiInterface.registerUser(user);
         // Asynchronously execute HTTP request
         call.enqueue(callbackInterface);
 
@@ -41,9 +42,10 @@ public class APIHandler {
 
     }
 
-    public void getRestaurantDetailsByLatLong(String lat,String lon,Callback<HttpResponse> callbackInterface){
+    public void getRestaurantDetailsByLatLong(String lat,String lon,Callback<ResponseBody> callbackInterface){
         APIInterface apiInterface = getRetrofitObject();
-        Call<HttpResponse> call =apiInterface.getRestaurantDetails();
+        String dynamicURL = Constants.GET_RESTAURANT_DETAILS+lat+"/and/"+lon+"/";
+        Call<ResponseBody> call =apiInterface.getRestaurantDetails(dynamicURL);
         // Asynchronously execute HTTP request
         call.enqueue(callbackInterface);
 

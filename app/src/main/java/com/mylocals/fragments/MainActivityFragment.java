@@ -19,6 +19,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mylocals.BuildConfig;
 import com.mylocals.Handler.APIHandler;
 import com.mylocals.MainActivity;
@@ -53,6 +56,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.okhttp.ResponseBody;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +67,7 @@ import org.scribe.model.Response;
 import org.scribe.model.Verb;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -192,43 +197,38 @@ public class MainActivityFragment extends Fragment implements
         itemTouchHelper.attachToRecyclerView(restaurantView);
 
         apiHandler=APIHandler.getInstance();
-        apiHandler.getRestaurantDetailsByLatLong("","",callbackInterface);
+        apiHandler.getRestaurantDetailsByLatLong("17.414478","78.466646",callbackInterface);
         return rootLayout;
     }
 
-    Callback<HttpResponse> callbackInterface = new Callback<HttpResponse>() {
+    Callback<ResponseBody> callbackInterface = new Callback<ResponseBody>() {
         /**
          * onResponse is called when any kind of response has been received.
          */
         @Override
-        public void onResponse(retrofit.Response<HttpResponse> response, Retrofit retrofit) {
+        public void onResponse(retrofit.Response<ResponseBody> response, Retrofit retrofit) {
             // http response status code + headers
+
             System.out.println("Response status code: " + response.code());
 
-            // isSuccess is true if response code => 200 and <= 300
-            if (!response.isSuccess()) {
+           // isSuccess is true if response code => 200 and <= 300
+            if (response.isSuccess()) {
                 // print response body if unsuccessful
                 try {
-                    System.out.println(response.errorBody().string());
-                } catch (IOException e) {
-                    // do nothing
+                    String res = response.body().string();
+                    Type collectionType = new TypeToken<ArrayList<com.mylocals.entities.Restaurant>>(){}.getType();
+                    Gson gson = new Gson();
+                    ArrayList<com.mylocals.entities.Restaurant> restaurants = gson.fromJson(res,
+                            collectionType);
+                    System.out.println(restaurants);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                return;
             }
 
-            // if parsing the JSON body failed, `response.body()` returns null
-            HttpResponse decodedResponse = response.body();
-            if (decodedResponse == null) return;
 
-            // at this point the JSON body has been successfully parsed
-            System.out.println("Response (contains request infos):");
-            System.out.println("- url:         " + decodedResponse.url);
-            System.out.println("- ip:          " + decodedResponse.origin);
-            System.out.println("- headers:     " + decodedResponse.headers);
-            System.out.println("- args:        " + decodedResponse.args);
-            System.out.println("- form params: " + decodedResponse.form);
-            System.out.println("- json params: " + decodedResponse.json);
         }
+
 
         /**
          * onFailure gets called when the HTTP request didn't get through.
