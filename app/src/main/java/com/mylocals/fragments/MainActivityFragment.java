@@ -138,17 +138,9 @@ public class MainActivityFragment extends Fragment implements
         restaurantView.setLayoutManager(mLayoutManager);
         restaurantView.setItemAnimator(new DefaultItemAnimator());
         //restaurantView.setLayoutManager(new UnscrollableLinearLayoutManager(getContext()));
-        ArrayList<String> address = new ArrayList<>();
-        address.add("hello");
-        String url = "https://assets-blog.fundera.com/assets/wp-content/uploads/2015/07/27142822/restaurant_icon.png";
-        currentRestaurant = new Restaurant("name", 5,
-                "http://img.stockfresh.com/files/r/rastudio/x/27/6600176_26703442.jpg",
-                url,
-                1,
-                url,
-                address, address, "deals",500, 45.154, 71.25);
-        mainRestaurantCardAdapter = new MainRestaurantCardAdapter((AppCompatActivity) getActivity(), currentRestaurant);
-        restaurantView.setAdapter(mainRestaurantCardAdapter);
+
+
+
 
       /*  return */
        // mapCardContainer = (LinearLayout) rootLayout.findViewById(R.id.cardMapLayout);
@@ -184,11 +176,11 @@ public class MainActivityFragment extends Fragment implements
 
                 // If user has swiped right, open Yelp to current restaurant's page.
                 if (direction == 8) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(currentRestaurant.getUrl())));
+                  //  startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(currentRestaurant.getUrl())));
 
                     // We don't want to remove the restaurant here, so we add it back to the restaurantView.
-                    mainRestaurantCardAdapter.remove();
-                    mainRestaurantCardAdapter.add(currentRestaurant);
+                   // mainRestaurantCardAdapter.remove();
+                   // mainRestaurantCardAdapter.add(currentRestaurant);
                 }
             }
         };
@@ -197,7 +189,28 @@ public class MainActivityFragment extends Fragment implements
         itemTouchHelper.attachToRecyclerView(restaurantView);
 
         apiHandler=APIHandler.getInstance();
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                    .enableAutoManage(getActivity(), this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+        locationHelper = new LocationProviderHelper(getActivity(), searchLocationBox,
+                mGoogleApiClient);
         apiHandler.getRestaurantDetailsByLatLong("17.414478","78.466646",callbackInterface);
+
+   /*     if (LocationProviderHelper.useGPS) {
+            if(locationHelper!=null && locationHelper.getLocation()!=null){
+
+                apiHandler.getRestaurantDetailsByLatLong(""+locationHelper.getLocation().getLatitude(),""+locationHelper.getLocation().getLongitude(),callbackInterface);
+
+            }else {
+                apiHandler.getRestaurantDetailsByLatLong("17.414478","78.466646",callbackInterface);
+
+            }
+
+            //distance = locationHelper.getLocation().distanceTo(restaurantLoc);
+        }*/
         return rootLayout;
     }
 
@@ -220,6 +233,8 @@ public class MainActivityFragment extends Fragment implements
                     Gson gson = new Gson();
                     ArrayList<com.mylocals.entities.Restaurant> restaurants = gson.fromJson(res,
                             collectionType);
+                    mainRestaurantCardAdapter = new MainRestaurantCardAdapter((AppCompatActivity) getActivity(), restaurants);
+                    restaurantView.setAdapter(mainRestaurantCardAdapter);
                     System.out.println(restaurants);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -252,19 +267,12 @@ public class MainActivityFragment extends Fragment implements
         super.onActivityCreated(savedInstanceState);
 
         // Create an instance of GoogleAPIClient.
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .enableAutoManage(getActivity(), this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
 
         // Must be defined in onActivityCreated() because searchLocationBox is part of MainActivity.
         searchLocationBox = (FloatingSearchView) getActivity().findViewById(R.id.searchBox);
 
         // Create LocationProviderHelper instance.
-        locationHelper = new LocationProviderHelper(getActivity(), searchLocationBox,
-                mGoogleApiClient);
+
 
         // Get Google Map using OnMapReadyCallback
        // mapView.getMapAsync(this);
@@ -1059,13 +1067,13 @@ public class MainActivityFragment extends Fragment implements
 
             // If the RecyclerView has not been set yet, set it with the currentRestaurant.
             if (mainRestaurantCardAdapter == null) {
-                mainRestaurantCardAdapter = new MainRestaurantCardAdapter((AppCompatActivity)getActivity(), currentRestaurant);
-                restaurantView.setAdapter(mainRestaurantCardAdapter);
+               // mainRestaurantCardAdapter = new MainRestaurantCardAdapter((AppCompatActivity)getActivity(), restaurants);
+               // restaurantView.setAdapter(mainRestaurantCardAdapter);
             }
 
             // These calls notify the RecyclerView that the data set has changed and we need to refresh.
             mainRestaurantCardAdapter.remove();
-            mainRestaurantCardAdapter.add(currentRestaurant);
+           // mainRestaurantCardAdapter.add(currentRestaurant);
 
             updateMapWithRestaurant(currentRestaurant);
             enableGenerateButton();
@@ -1082,10 +1090,10 @@ public class MainActivityFragment extends Fragment implements
             sequence.setConfig(config);
 
             sequence.addSequenceItem(buildShowcaseView(restaurantView, new RectangleShape(0, 0),
-                    "Swipe left to dismiss. Swipe right to open in Yelp. Tap bookmark button to save it for later."));
+                    "Swipe left to dismiss. Swipe right to open in Yelp. Tap bookmark button to save it for lat/*er."));
 
-            sequence.addSequenceItem(buildShowcaseView(((MainActivity) getActivity()).getMenuItemView(R.id.action_saved_list),
-                    new CircleShape(), "Tap here to view your saved list."));
+          /*  sequence.addSequenceItem(buildShowcaseView(((MainActivity) getActivity()).getMenuItemView(R.id.action_saved_list),
+                    new CircleShape(), "Tap here to view*//* your saved list."));*/
 
             sequence.start();
         }
